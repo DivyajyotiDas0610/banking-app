@@ -1,7 +1,10 @@
 package com.banking.bankingapp.controller;
 
+import com.banking.bankingapp.dto.RegisterRequest;
 import com.banking.bankingapp.model.Customer;
 import com.banking.bankingapp.service.AuthService;
+
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,17 +19,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Customer> register(
-            @RequestParam String username,
-            @RequestParam String password,
-            @RequestParam String email) {
+    public ResponseEntity<String> register(
+            @Valid @RequestBody RegisterRequest request) {
 
-        Customer customer = authService.registerCustomer(
-                username,
-                password,
-                email
+        authService.registerCustomer(
+                request.getUsername(),
+                request.getPassword(),
+                request.getEmail()
         );
 
-        return ResponseEntity.ok(customer);
+        return ResponseEntity.ok("Customer registered successfully");
     }
 }

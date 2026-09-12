@@ -4,6 +4,7 @@ import com.banking.bankingapp.model.Customer;
 import com.banking.bankingapp.repository.CustomerRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.banking.bankingapp.exception.DuplicateResourceException;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +21,14 @@ public class AuthService {
     }
 
     public Customer registerCustomer(String username, String password, String email) {
+
+        if (customerRepository.existsByUsername(username)) {
+            throw new DuplicateResourceException("Username already exists");
+        }
+
+        if (customerRepository.existsByEmail(email)) {
+            throw new DuplicateResourceException("Email already exists");
+        }
 
         Customer customer = new Customer();
 
