@@ -1,7 +1,8 @@
 package com.banking.bankingapp.controller;
 
+import com.banking.bankingapp.dto.LoginRequest;
+import com.banking.bankingapp.dto.LoginResponse;
 import com.banking.bankingapp.dto.RegisterRequest;
-import com.banking.bankingapp.model.Customer;
 import com.banking.bankingapp.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -29,5 +30,17 @@ public class AuthController {
         );
 
         return ResponseEntity.ok("Customer registered successfully");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(
+            @Valid @RequestBody LoginRequest request) {
+
+        String token = authService.login(
+                request.getUsername(),
+                request.getPassword()
+        );
+
+        return ResponseEntity.ok(new LoginResponse(token));
     }
 }

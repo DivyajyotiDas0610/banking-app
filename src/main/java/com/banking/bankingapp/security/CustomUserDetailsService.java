@@ -1,0 +1,38 @@
+package com.banking.bankingapp.security;
+
+import com.banking.bankingapp.model.Customer;
+import com.banking.bankingapp.repository.CustomerRepository;
+
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+
+    private final CustomerRepository customerRepository;
+
+    public CustomUserDetailsService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException {
+
+        Customer customer = customerRepository.findByUsername(username)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException(
+                                "Customer not found: " + username
+                        )
+                );
+
+        return User.builder()
+                .username(customer.getUsername())
+                .password(customer.getPassword())
+                .authorities("ROLE_USER")
+                .build();
+    }
+}
